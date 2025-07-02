@@ -1,99 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <title>Farm MiniApp</title>
+  <title>Ферма</title>
   <style>
     body {
+      background: #dbeafe;
       font-family: sans-serif;
-      background: #f3f4f6;
-      padding: 16px;
-    }
-    h1 {
-      font-size: 20px;
-      margin-bottom: 12px;
+      text-align: center;
     }
     .field {
       display: grid;
-      grid-template-columns: repeat(5, 40px);
-      gap: 6px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(2, 128px);
+      gap: 12px;
+      justify-content: center;
+      margin: 20px auto;
     }
     .tile {
-      width: 40px;
-      height: 40px;
-      background-color: #d1d5db;
-      border: 1px solid #9ca3af;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
+      width: 128px;
+      height: 128px;
+      image-rendering: pixelated;
+    }
+    .buttons {
+      margin-top: 20px;
     }
     .buttons button {
+      padding: 8px 14px;
       margin: 4px;
-      padding: 8px 12px;
+      font-weight: bold;
+      background-color: #22c55e;
+      color: white;
       border: none;
       border-radius: 6px;
-      background-color: #10b981;
-      color: white;
-      font-weight: bold;
       cursor: pointer;
-    }
-    .buttons button:hover {
-      background-color: #059669;
     }
   </style>
 </head>
 <body>
-  <h1>🌿 Твоя ферма</h1>
-  <div class="field" id="field">
-    <!-- Генерируется из JS -->
-  </div>
+  <h1>🌾 Моя изометрическая ферма</h1>
+  <div class="field" id="field"></div>
   <div class="buttons">
-    <button onclick="plant()">🌱 Посадить</button>
-    <button onclick="water()">💧 Полить</button>
-    <button onclick="harvest()">🌾 Собрать</button>
+    <button onclick="plant()">Посадить</button>
+    <button onclick="water()">Полить</button>
+    <button onclick="harvest()">Собрать</button>
   </div>
   <p id="log"></p>
 
   <script>
-    const field = document.getElementById('field');
-    const log = document.getElementById('log');
+    const field = document.getElementById("field");
+    const log = document.getElementById("log");
 
-    let state = Array(10).fill('⬜');
+    const tiles = {
+      empty: "tiles/empty.png",
+      growing: "tiles/growing.png",
+      watered: "tiles/watered.png",
+      ready: "tiles/ready.png"
+    };
 
-    function renderField() {
-      field.innerHTML = '';
-      state.forEach((tile, i) => {
-        const div = document.createElement('div');
-        div.className = 'tile';
-        div.textContent = tile;
-        field.appendChild(div);
+    let state = ["empty", "empty", "empty", "empty"];
+
+    function render() {
+      field.innerHTML = "";
+      state.forEach(s => {
+        const img = document.createElement("img");
+        img.src = tiles[s];
+        img.className = "tile";
+        field.appendChild(img);
       });
     }
 
     function plant() {
-      state = state.map(s => s === '⬜' ? '🌱' : s);
-      log.textContent = 'Посадили семена!';
-      renderField();
+      state = state.map(s => s === "empty" ? "growing" : s);
+      log.textContent = "🌱 Ты посадил пшеницу!";
+      render();
     }
 
     function water() {
-      state = state.map(s => s === '🌱' ? '💧' : s);
-      log.textContent = 'Полили поле!';
-      renderField();
+      state = state.map(s => s === "growing" ? "watered" : s);
+      log.textContent = "💧 Ты полил посевы!";
+      render();
     }
 
     function harvest() {
-      state = state.map(s => s === '💧' ? '⬜' : s);
-      log.textContent = 'Урожай собран!';
-      renderField();
+      state = state.map(s => s === "ready" || s === "watered" ? "empty" : s);
+      log.textContent = "🌾 Урожай собран!";
+      render();
     }
 
     Telegram.WebApp.ready();
-    renderField();
+    render();
   </script>
 </body>
 </html>
