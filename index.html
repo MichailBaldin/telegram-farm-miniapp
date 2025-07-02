@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>Farm MiniApp</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f3f4f6;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .field {
+      display: grid;
+      grid-template-columns: repeat(5, 40px);
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tile {
+      width: 40px;
+      height: 40px;
+      background-color: #d1d5db;
+      border: 1px solid #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .buttons button {
+      margin: 4px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background-color: #10b981;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .buttons button:hover {
+      background-color: #059669;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌿 Твоя ферма</h1>
+  <div class="field" id="field">
+    <!-- Генерируется из JS -->
+  </div>
+  <div class="buttons">
+    <button onclick="plant()">🌱 Посадить</button>
+    <button onclick="water()">💧 Полить</button>
+    <button onclick="harvest()">🌾 Собрать</button>
+  </div>
+  <p id="log"></p>
+
+  <script>
+    const field = document.getElementById('field');
+    const log = document.getElementById('log');
+
+    let state = Array(10).fill('⬜');
+
+    function renderField() {
+      field.innerHTML = '';
+      state.forEach((tile, i) => {
+        const div = document.createElement('div');
+        div.className = 'tile';
+        div.textContent = tile;
+        field.appendChild(div);
+      });
+    }
+
+    function plant() {
+      state = state.map(s => s === '⬜' ? '🌱' : s);
+      log.textContent = 'Посадили семена!';
+      renderField();
+    }
+
+    function water() {
+      state = state.map(s => s === '🌱' ? '💧' : s);
+      log.textContent = 'Полили поле!';
+      renderField();
+    }
+
+    function harvest() {
+      state = state.map(s => s === '💧' ? '⬜' : s);
+      log.textContent = 'Урожай собран!';
+      renderField();
+    }
+
+    Telegram.WebApp.ready();
+    renderField();
+  </script>
+</body>
+</html>
